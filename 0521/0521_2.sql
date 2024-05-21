@@ -1,0 +1,24 @@
+--1)
+SELECT AVR AS "평점"
+	FROM STUDENT;
+
+--2)
+SELECT ST_NUM AS "학점"
+	FROM COURSE;
+	
+--3)
+SELECT ORDERS AS "지위"
+	FROM PROFESSOR;
+
+--4)
+SELECT SAL AS "기본급여"
+	 , SAL*1.1 AS "10% 인상 급여"
+	FROM EMP;
+
+--5)
+SELECT AVR AS "기본 평점"
+	 , AVR*1.125 AS "4.5만점 평점"
+	FROM STUDENT;
+	
+	
+
