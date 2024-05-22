@@ -1,0 +1,21 @@
+--1) 학생중에 동명이인을 검색한다
+SELECT SNAME
+	FROM STUDENT
+	GROUP BY SNAME
+	HAVING COUNT(*) > 1;
+
+--2) 전체 교수 명단과 교수가 담당하는 과목의 이름을 학과 순으로 검색한다
+SELECT P.PNAME
+	 , C.CNAME
+	FROM PROFESSOR P
+	LEFT OUTER JOIN COURSE C
+	  ON C.PNO = P.PNO
+	ORDER BY P.SECTION;
+
+--3) 이번 학기 등록된 모든 과목과 담당 교수의 학점 순으로 검색한다
+SELECT C.CNAME
+	 , P.PNAME
+	FROM COURSE C
+	LEFT OUTER JOIN PROFESSOR P
+	  ON C.PNO = P.PNO
+	ORDER BY ST_NUM;
