@@ -1,0 +1,80 @@
+--13.<단일 행 함수를 사용하세요>
+--1) 이름이 두 글자(공백포함 3)인 학생의 이름을 검색하세요
+SELECT S.SNAME
+	 FROM STUDENT s
+	 WHERE S.SNAME LIKE '__';
+
+--2) '공'씨 성을 가진 학생의 이름을 검색하세요
+SELECT S.SNAME
+	 FROM STUDENT s
+	 WHERE S.SNAME LIKE '공%';
+
+--3) 교수의 지위를 한글자로 검색하세요(ex. 조교수 -> 조)
+SELECT SUBSTR(P.ORDERS,1,1) 
+	 FROM PROFESSOR p;
+
+--4) 일반 과목을 기초 과목으로 변경해서 모든 과목을 검색하세요
+--  (ex. 일반화학 -> 기초화학)
+SELECT TRANSLATE(C.CNAME,'일반','기초')
+	 FROM COURSE c;
+   
+--5) 만일 입력 실수로 student테이블의 sname컬럼에 데이터가 입력될 때
+--   문자열 마지막에 공백이 추가되었다면 검색할 때 이를 제외하고
+--   검색하는 SELECT 문을 작성하세요
+SELECT TRIM(TRAILING ' ' FROM S.SNAME)
+	 FROM STUDENT s ;
+
+--14.<단일 행 함수를 이용하세요>
+--1) 교수들이 부임한 달에 근무한 일수는 몇 일인지 검색하세요
+SELECT P.PNAME 
+	 , TRUNC(P.HIREDATE,'DD') - TRUNC(P.HIREDATE,'MM')+1 AS 근무일수 
+	 FROM PROFESSOR p;
+
+--2) 교수들의 오늘까지 근무한 주가 몇 주인지 검색하세요
+SELECT MONTHS_BETWEEN(TRUNC(SYSDATE, 'DD'), HIREDATE)
+	 FROM PROFESSOR;
+
+--3) 1991년에서 1995년 사이에 부임한 교수를 검색하세요
+SELECT PNAME
+	 , HIREDATE
+	FROM PROFESSOR
+	WHERE HIREDATE 
+		BETWEEN TO_DATE('19910101', 'YYYYMMDD') 
+		AND TO_DATE('19951231', 'YYYYMMDD');
+
+--4) 학생들의 4.5 환산 평점을 검색하세요(단 소수 이하 둘째자리까지)
+SELECT SNAME
+	 , AVR "4.0만점평점"
+	 , ROUND(AVR * 1.125 , 2) AS "4.5만점평점"
+	FROM STUDENT;
+
+SELECT E.HDATE
+FROM EMP e;
+--5) 사원들의 오늘까지 근무 기간이 몇 년 몇 개월 며칠인지 검색하세요000000000000000000
+SELECT TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE, 'DD'), TRUNC(E.HDATE ,'DD'))/12) AS 근무년수
+	 , TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE, 'DD'), TRUNC(E.HDATE ,'DD')))-TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE, 'DD'), TRUNC(E.HDATE ,'DD'))/12)*12 AS 근무월수
+	 , TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE, 'DD'), TRUNC(E.HDATE ,'DD')))*12 AS 근무일수???ㅇㅅㅇ
+	 --, TRUNC(SYSDATE ,'DD') -TRUNC(E.HDATE ,'DD')
+	 FROM EMP e ;
+
+--15.
+--1) 학생의 평균 평점을 다음 형식에 따라 소수점 이하 2자리까지 검색하세요
+--'OOO 학생의 평균 평점은 O.OO입니다.'
+SELECT CONCAT(S.SNAME,' 학생의 평균 평점은 '||TRUNC(S.AVR , 2)||'입니다.') AS 학생평가
+	 FROM STUDENT s ;
+
+--2) 교수의 부임일을 다음 형식으로 표현하세요0000000000000000000000000000
+--'OOO 교수의 부임일은 YYYY년 MM월 DD일입니다.'
+--SELECT CONCAT(P.PNAME,' 교수의 부임일은 '||TRUNC(P.HIREDATE,'YYYYMMDD')||'입니다.') 
+	 --FROM PROFESSOR p;
+
+--3) 교수중에 3월에 부임한 교수의 명단을 검색하세요
+SELECT P.PNAME 
+	 , P.HIREDATE 
+	 FROM PROFESSOR p 
+	 WHERE P.HIREDATE =TO_DATE('03','MM');
+	 
+SELECT P.HIREDATE
+	 FROM PROFESSOR p
+	 --EXTRACT(MONTH FOR P.HIREDATE): P.HIREDATE에서 MONTH를 가져오는 함수
+	 WHERE EXTRACT(MONTH FROM P.HIREDATE)=03;
