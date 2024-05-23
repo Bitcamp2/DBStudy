@@ -19,7 +19,7 @@ SELECT PNAME
 --4) 일반 과목을 기초 과목으로 변경해서 모든 과목을 검색하세요
 --  (ex. 일반화학 -> 기초화학)
 SELECT TRANSLATE('일반화학', '일반', '기초') -- 결과값 : --rld -f -ar 
-	FROM COURSE;
+	FROM COURSE; -- replace 써야함!!
    
 --5) 만일 입력 실수로 student테이블의 sname컬럼에 데이터가 입력될 때
 --   문자열 마지막에 공백이 추가되었다면 검색할 때 이를 제외하고
