@@ -25,7 +25,7 @@ SELECT MAJOR
 	 , LISTAGG(SNAME, ', ')
 	WITHIN GROUP(ORDER BY AVR DESC)
 	FROM STUDENT
-	GROUP BY MAJOR
+	GROUP BY MAJOR;
  			
  
 --4) 부서별 업무별 연봉의 평균을 검색하세요(부서와 업무 컬럼의 그룹화 여부도 같이 검색, GROUPING 사용)
@@ -37,7 +37,7 @@ SELECT D.DNAME
 	 FROM DEPT D
 	 JOIN EMP E
 	   ON D.DNO = E.DNO
-	 GROUP BY CUBE (D.DNAME, E.JOB)
+	 GROUP BY CUBE (D.DNAME, E.JOB);
 	
 
 	
