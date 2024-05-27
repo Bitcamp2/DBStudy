@@ -1,0 +1,18 @@
+diff a/0523/0522_14.sql b/0523/0522_14.sql	(rejected hunks)
+@@ -26,10 +26,12 @@
+ 	ORDER BY "4.5"; 
+ 
+ --5) 사원들의 오늘까지 근무 기간이 몇 년 몇 개월 며칠인지 검색하세요
+-SELECT ENAME || ROUND(TRUNC(TRUNC(SYSDATE) - TRUNC(HDATE)) /365, 1) || '년'
+-	 || ROUND(TRUNC(TRUNC(SYSDATE) - TRUNC(HDATE)) /365 /12,1) || '개월'
+-	 || ROUND(TRUNC(TRUNC(SYSDATE) - TRUNC(HDATE)) /365 /12 /30,1) || '일'
+-	FROM EMP;
++SELECT HDATE
++	 , TRUNC(MONTHS_BETWEEN(SYSDATE, HDATE) / 12) || '년' 
++	 || TRUNC(MONTHS_BETWEEN(SYSDATE, HDATE) - TRUNC(MONTHS_BETWEEN(SYSDATE, HDATE) / 12) * 12) || '개월' 
++	 || TRUNC(SYSDATE - ADD_MONTHS(HDATE, MONTHS_BETWEEN(SYSDATE, HDATE))) 
++	 || '일' AS 오늘까지근무기간
++	 FROM EMP;
+ 
+ 
+ 
