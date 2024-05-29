@@ -1,0 +1,84 @@
+--뷰 이름은 자유
+--1) 학생의 평점 4.5 만점으로 환산된 정보를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW INC_AVR (
+	AVR
+) AS (
+	SELECT AVR * 1.125
+		FROM STUDENT
+);
+COMMIT;
+
+SELECT * FROM INC_AVR;
+
+--2) 각 과목별 기말고사 평균 점수를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW AVG_RESULT (
+	AVG_CNAME,
+	AVG_RESULT
+) AS (
+	SELECT C.CNAME
+		 , AVG(SC.RESULT)
+		 FROM COURSE C
+		 JOIN SCORE SC
+		   ON C.CNO = SC.CNO
+		 GROUP BY C.CNAME
+);
+COMMIT;
+SELECT * FROM AVG_RESULT;
+--3) 각 사원과 관리자(MGR)의 이름을 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW SEARCH_MGR (
+	EMANE, 
+	MGR,
+	ENAME
+) AS (
+	SELECT E.ENAME
+		 , E.MGR
+		 , EM.ENAME
+		FROM EMP E
+		JOIN EMP EM
+		  ON E.MGR = EM.ENO
+);
+COMMIT;
+SELECT * FROM SEARCH_MGR;
+
+--4) 각 과목별 기말고사 평가 등급(A~F)까지와 해당 학생 정보를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW GRA_ST (
+	SNO,
+	SNAME,
+	CNAME,
+	RESULT,
+	GRADE
+) AS (
+	SELECT ST.SNO
+		 , ST.SNAME
+		 , C.CNAME
+		 , SC.RESULT
+		 , SCG.GRADE
+		FROM STUDENT ST
+		JOIN SCORE SC
+		  ON ST.SNO = SC.SNO
+		JOIN COURSE C
+		  ON SC.CNO = C.CNO
+		JOIN SCGRADE SCG
+		  ON SC.RESULT BETWEEN LOSCORE AND HISCORE
+);
+COMMIT;
+SELECT * FROM GRA_ST;
+--5) 물리학과 교수의 과목을 수강하는 학생의 명단을 검색할 뷰를 생성하세요.
+CREATE OR REPLACE VIEW PSY_ST (
+	CNAME,
+	PNAME,
+	SNAME
+) AS (
+	SELECT C.CNAME
+		 , P.PNAME
+		 , ST.SNAME
+		FROM COURSE C
+		JOIN PROFESSOR P
+		  ON C.PNO = P.PNO
+		JOIN SCORE SC
+		  ON C.CNO = SC.CNO
+		JOIN STUDENT ST
+		  ON SC.SNO = ST.SNO
+);
+COMMIT;
+SELECT * FROM PSY_ST;
