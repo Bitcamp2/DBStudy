@@ -1,0 +1,170 @@
+--1) 어제 만든 SCORE_STGR 테이블의 SNO 컬럼에 INDEX를 추가하세요.
+CREATE INDEX SCORE_STGR2_IDX
+	ON SCORE_STGR2(SNO);
+
+--2) 어제 만든 ST_COURSEPF 테이블의 SNO, CNO, PNO 다중 컬럼에 INDEX를 추가하세요.
+CREATE INDEX ST_COURSEPF_IDX
+	ON ST_COURSEPF(SNO, CNO, PNO);
+
+--뷰 이름은 자유
+--1) 학생의 평점 4.5 만점으로 환산된 정보를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW ST_AVR_CHANGE(
+	CHANGE_AVR
+)AS(
+	SELECT AVR/4.0*4.5
+		 FROM STUDENT
+);
+
+SELECT *
+	FROM ST_AVR_CHANGE;
+
+--2) 각 과목별 기말고사 평균 점수를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW COURSE_AVG_RESULT(
+	  COURSE_NUM
+	, AVG_RESULT
+)AS(
+	SELECT CNO
+		 , AVG(RESULT)
+		 FROM SCORE SC
+		 GROUP BY CNO
+);
+
+SELECT *
+	FROM COURSE_AVG_RESULT;
+
+--3) 각 사원과 관리자(MGR)의 이름을 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW EMP_ENAME_MGR(
+	EMP_ENAME,
+	EMP_MGR
+)AS(
+	SELECT ENAME
+		 , MGR
+		 FROM EMP
+);
+
+SELECT *
+	FROM EMP_ENAME_MGR;
+
+--4) 각 과목별 기말고사 평가 등급(A~F)까지와 해당 학생 정보를 검색할 수 있는 뷰를 생성하세요.???문제이해안됨여
+--문제이해 안돼서 못푼문제 ㅜㅜㅜㅜ
+CREATE OR REPLACE COURSE_RESULT_GRADE_N_ST(
+	COURSE_RESULT_GRADE,
+	ST_INFO
+)AS(
+	SELECT 	
+		 FROM SCORE SC
+		 JOIN SCGRADE SG
+		   ON SC.RESULT BETWEEN SG.
+)
+
+SELECT C.CNAME 
+	 , AVG(SC."RESULT") AS AVG_RESULT
+	FROM SCORE SC
+	JOIN COURSE C
+	  ON C.CNO=SC.CNO 
+	GROUP BY C.CNAME 
+	
+SELECT A.CNAME
+	 , A.AVG_RESULT
+	 , SG.GRADE
+	 FROM(
+	 	SELECT C.CNAME 
+	 		 , AVG(SC."RESULT") AS AVG_RESULT
+			FROM SCORE SC
+			JOIN COURSE C
+			  ON C.CNO=SC.CNO 
+			GROUP BY C.CNAME 
+	 )A
+	 JOIN SCGRADE SG
+	   ON AVG_RESULT BETWEEN SG.LOSCORE AND SG.HISCORE 
+		   
+--5) 물리학과 교수의 과목을 수강하는 학생의 명단을 검색할 뷰를 생성하세요.
+CREATE OR REPLACE VIEW MING(
+	ST_NAME
+)AS(
+	SELECT ST.SNAME
+	 	FROM PROFESSOR P
+	 	JOIN COURSE C
+	 	  ON P.PNO =C.PNO 
+	 	JOIN SCORE SC
+	 	  ON SC.CNO=C.CNO
+	 	JOIN STUDENT ST
+	 	  ON ST.SNO = SC.SNO   
+	 	WHERE P."SECTION" ='물리'
+);	   
+	   
+SELECT *
+	FROM MING;
+	  
+--1) 4.5 환산 평점이 가장 높은 3인의 학생을 검색하세요.
+SELECT ROWNUM
+	 , A.SNAME
+	 , A.AVR
+	 FROM (
+	 	SELECT AVR*1.125 AS AVR
+	 		 , SNAME
+	 		 FROM STUDENT
+	 		 ORDER BY AVR DESC
+	 )A
+	 WHERE ROWNUM<=3;
+	 
+--2) 기말고사 과목별 평균이 높은 3과목을 검색하세요.
+SELECT ROWNUM
+	 , A.CNAME
+	 , A.AVG_C_RESULT
+	 FROM(
+	 	SELECT C.CNAME
+	 		, AVG(SC.RESULT) AS AVG_C_RESULT
+	 		FROM SCORE SC
+	 		JOIN COURSE C
+	 		  ON C.CNO=SC.CNO
+	 		GROUP BY C.CNAME
+	 		ORDER BY AVG_C_RESULT DESC
+	 )A
+	 WHERE ROWNUM<=3;
+
+--3) 학과별, 학년별, 기말고사 평균이 순위 3까지를 검색하세요.(학과, 학년, 평균점수 검색)
+
+
+--4) 기말고사 성적이 높은 과목을 담당하는 교수 3인을 검색하세요.(교수이름, 과목명, 평균점수 검색)
+
+
+--5) 교수별로 현재 수강중인 학생의 수를 검색하세요.
+	--아멀랑
+SELECT P.PNAME 
+	 , COUNT(ST.SNO) 
+	 FROM PROFESSOR P
+	 JOIN COURSE C
+	   ON P.PNO =C.PNO 
+	 JOIN SCORE SC
+	   ON SC.CNO=C.CNO 
+	 JOIN STUDENT ST
+	   ON ST.SNO=SC.SNO
+	 GROUP BY PNAME
+
+--1) CNO이 PK인 COURSE_PK 테이블을 생성하세요.(1번 방식으로)
+
+
+--2) PNO이 PK인 PROFESSOR_PK 테이블을 생성하세요.(2번 방식으로)
+
+
+--3) PF_TEMP 테이블에 PNO을 PK로 추가하세요.
+
+
+--4) COURSE_PROFESSOR 테이블에 CNO, PNO을 PK로 추가하세요.
+
+
+--5) BOARD_NO(NUMBER)를 PK로 갖으면서 BOARD_TITLE(VARCHAR2(200)), BOARD_CONTENT(VARCHAR2(2000)), 
+--   BOARD_WRITER(VARCHAR2(20)), BOARD_FRGT_DATE(DATE), BOARD_LMDF_DATE(DATE) 컬럼을 갖는 T_BOARD 테이블을 생성하세요.
+
+
+--6) BOARD_NO(NUMBER), BOARD_FILE_NO(NUMBER)를 PK로 갖으면서 BOARD_FILE_NM(VARCHAR2(200)), BOARD_FILE_PATH(VARCHAR2(2000)),
+--   ORIGIN_FILE_NM(VARCHAR2(200)) 컬럼을 갖는 T_BOARD_FILE 테이블을 생성하세요.
+
+--7) 다음 구조를 갖는 테이블을 생성하세요.
+--   T_SNS                              T_SNS_DETAIL                        T_SNS_UPLOADED
+--   SNS_NO(PK)    SNS_NM               SNS_NO(PK, FK)   SNS_BEN            SNS_NO(PK, FK)    SNS_UPL_NO(PK)
+--     1            페북                   1               4000                   1                  1
+--     2           인스타                  2               10000                  1                  2
+--     3           트위터                  3               30000                  2                  1
+--                                                                               2                  2
