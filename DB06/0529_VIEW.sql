@@ -1,0 +1,89 @@
+--뷰 이름은 자유
+--1) 학생의 평점 4.5 만점으로 환산된 정보를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW V_STUDENT_AVR_CH(
+	 STUDENT_SNO,
+	 STUDENT_SNAME,
+	 STUDENT_SEX,
+	 STUDENT_SYEAR,
+	 STUDENT_MAJOR,
+	 STUDENT_AVR 
+	 ) AS (
+	 		SELECT SNO
+	 			 , SNAME
+	 			 , SEX
+	 			 , SYEAR
+	 			 , MAJOR
+	 			 , AVR * 1.125
+	 			FROM STUDENT);
+	 		
+SELECT *
+FROM V_STUDENT_AVR_CH;
+
+--2) 각 과목별 기말고사 평균 점수를 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW COURSE_RESULT_AVG(
+	 COURSE_CNAME,
+	 SCORE_AVG_RESULT
+	 ) AS (
+	 		SELECT C.CNAME
+	 			 , AVG(SC.RESULT)
+	 			FROM COURSE C
+	 			JOIN SCORE SC
+	 			  ON C.CNO = SC.CNO
+	 			GROUP BY C.CNAME
+	 			);
+	 		
+SELECT *
+FROM COURSE_RESULT_AVG;
+
+--3) 각 사원과 관리자(MGR)의 이름을 검색할 수 있는 뷰를 생성하세요.
+CREATE OR REPLACE VIEW EMP_ENAME_MGR(
+	EMP_ENAME,
+	EMP_MGR
+	) AS (
+			SELECT ENAME
+				 , MGR
+				FROM EMP);
+
+SELECT *
+FROM EMP_ENAME_MGR;	
+
+--4) 각 과목별 기말고사 평가 등급(A~F)까지와 해당 학생 정보를 검색할 수 있는 뷰를 생성하세요.
+
+CREATE OR REPLACE VIEW COURSE_RESULT_GRADE(
+	STUDENT_SNAME,
+	COURSE_CNAME,
+	SCORE_GRADE
+	) AS (
+			SELECT S.SNAME
+				 , C.CNAME
+				 , SG.GRADE
+				FROM SCORE SC
+				JOIN COURSE C
+				  ON SC.CNO = C.CNO
+				JOIN SCGRADE SG
+				  ON SC.RESULT BETWEEN SG.LOSCORE AND SG.HISCORE
+				JOIN STUDENT S
+				  ON S.SNO = SC.SNO);
+
+SELECT *
+FROM COURSE_RESULT_GRADE;
+
+--5) 물리학과 교수의 과목을 수강하는 학생의 명단을 검색할 뷰를 생성하세요.
+-- 이거아닌거같음
+DROP VIEW M_PRO_COURSE;
+
+CREATE OR REPLACE VIEW M_PRO_COURSE(
+	STUDENT_NAME
+	) AS (
+			SELECT DISTINCT S.SNAME
+				FROM STUDENT S
+				JOIN SCORE SC
+				  ON S.SNO = SC.SNO
+				JOIN COURSE C
+				  ON SC.CNO = C.CNO
+				JOIN PROFESSOR P
+				  ON C.PNO = P.PNO
+				WHERE P.SECTION LIKE '물리');
+				
+SELECT *
+FROM M_PRO_COURSE;
